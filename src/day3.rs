@@ -80,7 +80,7 @@ fn convert_str_to_decimal(s: &str) -> u32 {
     res
 }
 
-fn get_bit_criteria(pos: usize, v: &Vec<Vec<char>>) -> Option<char> {
+fn get_bit_criteria(pos: usize, v: &Vec<Vec<char>>, flag: bool) -> Option<char> {
 
     if pos >= v.len() {
         return None
@@ -89,13 +89,23 @@ fn get_bit_criteria(pos: usize, v: &Vec<Vec<char>>) -> Option<char> {
     let num_of_ones = get_num_of_ones(pos, &v);
     let num_of_zeroes = get_num_of_zeroes(pos, &v);
 
-    if num_of_ones >= num_of_zeroes {
+    // println!("1's: {} - 0's: {}", num_of_ones, num_of_zeroes);
+
+    if flag {
+        if num_of_ones >= num_of_zeroes {
+            return Some('1');
+        }
+        else {
+            return Some('0');
+        }
+    }
+
+    if num_of_ones < num_of_zeroes {
         return Some('1');
     }
     else {
         return Some('0');
     }
-
 }
 
 fn get_filter_indexes(bc: char, vpos: &Vec<char>) -> Vec<usize> {
@@ -106,21 +116,21 @@ fn get_filter_indexes(bc: char, vpos: &Vec<char>) -> Vec<usize> {
         .collect()
 }
 
-fn calculate_oxigen(i: usize, v: &Vec<Vec<char>>) -> Vec<Vec<char>> {
+fn calculate_oxigen_or_co2(i: usize, v: &Vec<Vec<char>>, flag: bool) -> Vec<Vec<char>> {
 
-    let bit_criteria = get_bit_criteria(i, &v);
+    let bit_criteria = get_bit_criteria(i, &v, flag);
     if let Some(bc) = bit_criteria {
-        println!("gg: {}", bc);
+        // println!("gg: {} - {}", bc, flag);
         // println!("char: {}", bc);
         // println!("{:?}", get_filter_indexes(bc, &v[i]));
         let new_v = filter_with_indexes(&v, &get_filter_indexes(bc, &v[i]));
-        println!("SUBVECTOR ({} - {}): {:?}", i, new_v[0].len(), new_v);
+        // println!("SUBVECTOR ({} - {}): {:?}", i, new_v[0].len(), new_v);
 
         if new_v[0].len() == 1 {
             return new_v
         }
         else {
-            return calculate_oxigen(i+1, &new_v);
+            return calculate_oxigen_or_co2(i+1, &new_v, flag);
         }
     }
 
@@ -153,30 +163,45 @@ fn filter_with_indexes(v: &Vec<Vec<char>>, idx: &Vec<usize>) -> Vec<Vec<char>> {
 
 fn main()
 {
-    // let input = aoc::read_one_per_line::<String>("./inputs/day3.txt").unwrap();
-    let input = vec![
-        String::from("11010"),
-        String::from("00110"),
-        String::from("00010"),
-        String::from("10101"),
-    ];
+    let input = aoc::read_one_per_line::<String>("./inputs/day3.txt").unwrap();
+    // let input = vec![
+    //     String::from("11010"),
+    //     String::from("00110"),
+    //     String::from("00010"),
+    //     String::from("10101"),
+    // ];
 
     let v = convert_to_structure(&input);
-    println!("{:?}", v);
+    // println!("{:?}", v);
 
     let (gamma, epsilon) = calculate_variants(&v);
 
     let gammna_res = convert_str_to_decimal(&gamma[..]);
     let epsilon_res = convert_str_to_decimal(&epsilon[..]);
-    println!("The result of the part1 is {}\n", gammna_res*&epsilon_res);
+    println!("The result of the part1 is {}\n", gammna_res*epsilon_res);
 
-    let v = calculate_oxigen(0, &v);
+    let o2 = calculate_oxigen_or_co2(0, &v, true);
 
-    let res = v.iter().flatten().collect::<Vec<&char>>();
+    let o2 = o2.iter().flatten().collect::<Vec<&char>>();
+    let so2 = String::new();
+    let o2 = o2.iter().fold(so2, |mut acc, item|{
+        acc.push(**item);
+        acc
+    });
 
-    println!("{:?}", res);
+    let o2 = convert_str_to_decimal(&o2[..]);
 
+    // println!("{:?}", v);
+    let co2 = calculate_oxigen_or_co2(0, &v, false);
 
+    let co2 = co2.iter().flatten().collect::<Vec<&char>>();
+    let sco2 = String::new();
+    let co2 = co2.iter().fold(sco2, |mut acc, item|{
+        acc.push(**item);
+        acc
+    });
 
+    let co2 = convert_str_to_decimal(&co2[..]);
 
+    println!("The result of the part2 is {}\n", o2*co2);
 }
