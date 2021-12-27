@@ -1,7 +1,7 @@
 use aoc;
+
 fn convert_to_structure(input: &Vec<String>) -> Vec<Vec<char>> { 
     let item0 = *input.iter().peekable().peek().unwrap();
-    // println!("{}", item0.len());
 
     let mut r = Vec::new();
 
@@ -14,7 +14,6 @@ fn convert_to_structure(input: &Vec<String>) -> Vec<Vec<char>> {
             let c = item.chars().collect::<Vec<char>>();
             if let Some(v) = c.get(i) {
                 r[i].push(*v);
-                // println!("inserting into arran {} the value {}", i, v);
             }
         }
     }
@@ -22,7 +21,29 @@ fn convert_to_structure(input: &Vec<String>) -> Vec<Vec<char>> {
     r
 }
 
-fn calculate_variants(v: Vec<Vec<char>>) -> (String, String) {
+fn get_num_of(pos: usize, v: &Vec<Vec<char>>, c: char) -> usize {
+
+    let num_of_ones = v[pos].iter().fold(0, |acc, &item|{
+        if item == c {
+            return acc + 1;
+        }
+        acc
+    });
+
+    num_of_ones
+}
+
+fn get_num_of_ones(pos: usize, v: &Vec<Vec<char>>) -> usize {
+
+    get_num_of(pos, &v, '1')
+}
+
+fn get_num_of_zeroes(pos: usize, v: &Vec<Vec<char>>) -> usize {
+
+    get_num_of(pos, &v, '0')
+}
+
+fn calculate_variants(v: &Vec<Vec<char>>) -> (String, String) {
     let len = v.len();
     let len2 = v[0].len();
 
@@ -30,12 +51,7 @@ fn calculate_variants(v: Vec<Vec<char>>) -> (String, String) {
     let mut r2 = String::from("");
 
     for i in 0..len {
-        let num_of_ones = v[i].iter().fold(0, |acc, &item|{
-            if item == '1' {
-                return acc + 1;
-            }
-            acc
-        });
+        let num_of_ones = get_num_of_ones(i, &v);
         if num_of_ones > len2/2 {
             r1.push('1');
             r2.push('0');
@@ -64,41 +80,103 @@ fn convert_str_to_decimal(s: &str) -> u32 {
     res
 }
 
+fn get_bit_criteria(pos: usize, v: &Vec<Vec<char>>) -> Option<char> {
+
+    if pos >= v.len() {
+        return None
+    }
+
+    let num_of_ones = get_num_of_ones(pos, &v);
+    let num_of_zeroes = get_num_of_zeroes(pos, &v);
+
+    if num_of_ones >= num_of_zeroes {
+        return Some('1');
+    }
+    else {
+        return Some('0');
+    }
+
+}
+
+fn get_filter_indexes(bc: char, vpos: &Vec<char>) -> Vec<usize> {
+    vpos.iter()
+        .enumerate()
+        .filter(|(_, val)| **val == bc )
+        .map(|(idx, _)| idx )
+        .collect()
+}
+
+fn calculate_oxigen(i: usize, v: &Vec<Vec<char>>) -> Vec<Vec<char>> {
+
+    let bit_criteria = get_bit_criteria(i, &v);
+    if let Some(bc) = bit_criteria {
+        println!("gg: {}", bc);
+        // println!("char: {}", bc);
+        // println!("{:?}", get_filter_indexes(bc, &v[i]));
+        let new_v = filter_with_indexes(&v, &get_filter_indexes(bc, &v[i]));
+        println!("SUBVECTOR ({} - {}): {:?}", i, new_v[0].len(), new_v);
+
+        if new_v[0].len() == 1 {
+            return new_v
+        }
+        else {
+            return calculate_oxigen(i+1, &new_v);
+        }
+    }
+
+    Vec::new()
+}
+
+fn filter_with_indexes(v: &Vec<Vec<char>>, idx: &Vec<usize>) -> Vec<Vec<char>> {
+
+    let mut res:Vec<Vec<char>> = Vec::new();
+
+    for ix in v {
+        let filtered = ix.iter()
+            .enumerate()
+            .filter(|(i,_)| {
+                for ii in idx {
+                    if *ii == *i {
+                        return true;
+                    }
+                }
+                false
+            })
+            .map(|(_, &val)| val )
+            .collect::<Vec<char>>();
+
+        res.push(filtered);
+    }
+
+    res
+}
+
 fn main()
 {
-    let input = aoc::read_one_per_line::<String>("./inputs/day3.txt").unwrap();
-    // let input = vec![
-    //     String::from("11010"),
-    //     String::from("00110"),
-    //     String::from("10101"),
-    // ];
+    // let input = aoc::read_one_per_line::<String>("./inputs/day3.txt").unwrap();
+    let input = vec![
+        String::from("11010"),
+        String::from("00110"),
+        String::from("00010"),
+        String::from("10101"),
+    ];
 
     let v = convert_to_structure(&input);
-    // println!("{:?}", v);
+    println!("{:?}", v);
 
-    let (gamma, epsilon) = calculate_variants(v);
+    let (gamma, epsilon) = calculate_variants(&v);
 
     let gammna_res = convert_str_to_decimal(&gamma[..]);
     let epsilon_res = convert_str_to_decimal(&epsilon[..]);
+    println!("The result of the part1 is {}\n", gammna_res*&epsilon_res);
 
-    println!("The result is {}", gammna_res*&epsilon_res);
-    // assert_eq!(&gamma[..], gamma.as_str());
+    let v = calculate_oxigen(0, &v);
+
+    let res = v.iter().flatten().collect::<Vec<&char>>();
+
+    println!("{:?}", res);
 
 
 
 
-    // println!("0011 AND 0101 is {:04b}", 0b0011u32 & 0b0101);
-    // let binnumber: u32 = 0b0011;
-    // println!("{:04b}", binnumber * 6);
-
-    // println!("{}", binnumber.to_string());
-    // let s = "00010";
-
-    // println!("{}", s.parse::<u32>().unwrap());
-
-    // println!("{:?}", s.chars().collect::<Vec<char>>());
-
-    // let x = s.chars().collect::<Vec<char>>();
-
-    // println!("{}", x[3]);
 }
