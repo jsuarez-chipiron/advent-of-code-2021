@@ -1,10 +1,10 @@
 #[derive(Debug, Clone, Copy)]
 struct Fish {
-    counter: i32,
+    counter: i64,
 }
 
 impl Fish {
-    fn new(counter: i32) -> Self {
+    fn new(counter: i64) -> Self {
         Fish{counter}
     }
 }
@@ -53,9 +53,9 @@ fn get_fishes() -> Vec<Fish> {
 
     let fishes = fishes.get(0).unwrap();
 
-    let fishes: Vec<i32> = fishes
+    let fishes: Vec<i64> = fishes
         .split(',')
-        .filter_map(|n| n.parse::<i32>().ok())
+        .filter_map(|n| n.parse::<i64>().ok())
         .collect();
 
     let fishes = fishes.iter().map(|&x| Fish::new(x)).collect();
@@ -72,4 +72,12 @@ fn main() {
     });
 
     println!("part 1, result: {}", fishes_group.len());
+
+    let mut fishes_group = FishGroup::new(get_fishes());
+
+    (0..256).for_each(|_|{
+        fishes_group = fishes_group.next_gen();
+    });
+
+    println!("part 2, result: {}", fishes_group.len());
 }
