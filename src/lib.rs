@@ -10,7 +10,10 @@ where
        .collect())
 }
 
-pub fn get_integers(path: &str) -> Vec<usize> {
+pub fn get_integers<T>(path: &str) -> Vec<T> 
+where 
+    T: FromStr,
+{
     let integers = read_one_per_line::<String>(path).unwrap();
 
     let mut new_integers = Vec::new();
@@ -23,9 +26,9 @@ pub fn get_integers(path: &str) -> Vec<usize> {
 
     let integers = integers.get(0).unwrap();
 
-    let integers: Vec<usize> = integers
+    let integers: Vec<T> = integers
         .split(',')
-        .filter_map(|n| n.parse::<usize>().ok())
+        .filter_map(|n| n.parse::<T>().ok())
         .collect();
 
     integers
