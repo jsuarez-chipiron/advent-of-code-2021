@@ -9,3 +9,26 @@ where
        .filter_map(|line| line.parse::<T>().ok())
        .collect())
 }
+
+pub fn get_integers(path: &str) -> Vec<usize> {
+    let integers = read_one_per_line::<String>(path).unwrap();
+
+    let mut new_integers = Vec::new();
+    for n in integers {
+        if n != "" {
+            new_integers.push(n);
+        }
+    }
+    let integers = new_integers;
+
+    let integers = integers.get(0).unwrap();
+
+    let integers: Vec<usize> = integers
+        .split(',')
+        .filter_map(|n| n.parse::<usize>().ok())
+        .collect();
+
+    integers
+
+}
+
