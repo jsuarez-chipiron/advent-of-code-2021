@@ -1,46 +1,6 @@
-#[derive(Debug, Clone, Copy)]
-struct Fish {
-    counter: i64,
-}
+use std::collections::VecDeque;
 
-impl Fish {
-    fn new(counter: i64) -> Self {
-        Fish{counter}
-    }
-}
-
-#[derive(Debug, Clone)]
-struct FishGroup {
-    fishes: Vec<Fish>,
-}
-
-impl FishGroup {
-    fn new(fishes: Vec<Fish>) -> Self {
-        FishGroup{fishes}
-    }
-
-    fn next_gen(&self) -> FishGroup {
-        let fishes: Vec<Fish> = self.fishes.iter().map(|x| Fish{counter: x.counter-1} ).collect();
-        let mut new_fishes = fishes.clone();
-
-        fishes.iter().filter(|&x| x.counter < 0).for_each(|_| new_fishes.push(Fish{counter: 8}));
-
-        let fishes: Vec<Fish> = new_fishes.iter().map(|&x|{
-            if x.counter < 0 {
-                return Fish{counter: 6};
-            }
-            x
-        }).collect();
-
-        FishGroup{fishes}
-    }
-
-    fn len(&self) -> usize {
-        self.fishes.len()
-    }
-}
-
-fn get_fishes() -> Vec<Fish> {
+fn get_fishes() -> Vec<usize> {
     let fishes = aoc::read_one_per_line::<String>("./inputs/day6.txt").unwrap();
 
     let mut new_fishes = Vec::new();
@@ -53,31 +13,34 @@ fn get_fishes() -> Vec<Fish> {
 
     let fishes = fishes.get(0).unwrap();
 
-    let fishes: Vec<i64> = fishes
+    let fishes: Vec<usize> = fishes
         .split(',')
-        .filter_map(|n| n.parse::<i64>().ok())
+        .filter_map(|n| n.parse::<usize>().ok())
         .collect();
 
-    let fishes = fishes.iter().map(|&x| Fish::new(x)).collect();
-     
     fishes
 
 }
 
+fn get_count(puzzle: &Vec<usize>, days: u32) -> u64 {
+    let mut counts = VecDeque::from(vec![0; 9]);
+
+    puzzle.iter().for_each(|i| counts[*i] += 1);
+
+    (0..days).for_each(|_| {
+        let new_babies = counts.pop_front().unwrap();
+        counts[6] += new_babies;
+        counts.push_back(new_babies);
+    });
+
+    counts.iter().sum()
+}
+
 fn main() {
-    let mut fishes_group = FishGroup::new(get_fishes());
+    //TJ's solution
+    
+    let initial_fishes = get_fishes();
 
-    (0..80).for_each(|_|{
-        fishes_group = fishes_group.next_gen();
-    });
-
-    println!("part 1, result: {}", fishes_group.len());
-
-    let mut fishes_group = FishGroup::new(get_fishes());
-
-    (0..256).for_each(|_|{
-        fishes_group = fishes_group.next_gen();
-    });
-
-    println!("part 2, result: {}", fishes_group.len());
+    println!("Part1: {}", get_count(&initial_fishes, 80));
+    println!("Part2: {}", get_count(&initial_fishes, 256));
 }
