@@ -109,7 +109,6 @@ fn main() {
     let mut completes: Vec<Vec<char>> = Vec::new();
 
     corrects.iter().for_each(|i| {
-        // let complete = complete(*i);
         completes.push(complete(*i));
     });
 
