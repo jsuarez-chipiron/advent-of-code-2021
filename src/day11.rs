@@ -1,10 +1,13 @@
-// struct Point {
-//     i: u32,
-//     j: u32,
-// }
+use std::collections::HashSet;
+
+#[derive(Debug, PartialEq, Eq, Hash)]
+struct Point {
+    i: usize,
+    j: usize,
+}
 
 fn parse_input() -> Vec<Vec<u32>> {
-    let raw = aoc::read_one_per_line::<String>("inputs/day11_test.txt").unwrap();
+    let raw = aoc::read_one_per_line::<String>("inputs/day11.txt").unwrap();
 
     let mut ret: Vec<Vec<u32>> = Vec::new();
 
@@ -20,7 +23,8 @@ fn parse_input() -> Vec<Vec<u32>> {
 fn get_num_of_fashes(octopuses: &mut Vec<Vec<u32>>) -> u32 {
     increase_octopuses_energy(octopuses);
 
-    let num_of_flashes = get_num_of_fashes_recur(octopuses);
+    let mut has_flashed: HashSet<Point> = HashSet::new();
+    let num_of_flashes = get_num_of_fashes_recur(octopuses, &mut has_flashed);
 
     octopuses.iter_mut().for_each(|o| {
         o.iter_mut().for_each(|i| {
@@ -33,25 +37,26 @@ fn get_num_of_fashes(octopuses: &mut Vec<Vec<u32>>) -> u32 {
     num_of_flashes
 }
 
-fn get_num_of_fashes_recur(octopuses: &mut Vec<Vec<u32>>) -> u32 {
-    let num_of_flashes = process_flashes(octopuses);
+fn get_num_of_fashes_recur(octopuses: &mut Vec<Vec<u32>>, has_flashed: &mut HashSet<Point>) -> u32 {
+    let num_of_flashes = process_flashes(octopuses, has_flashed);
     if num_of_flashes == 0 {
         return 0;
     }
     else {
-        return num_of_flashes + get_num_of_fashes_recur(octopuses);
+        return num_of_flashes + get_num_of_fashes_recur(octopuses, has_flashed);
     }
 }
 
-fn process_flashes(octopuses: &mut Vec<Vec<u32>>) -> u32 {
+fn process_flashes(octopuses: &mut Vec<Vec<u32>>, has_flashed: &mut HashSet<Point>) -> u32 {
     let num_rows = octopuses.len();
     let num_cols = octopuses[0].len();
 
     let mut num_of_flashes = 0;
-
     for i in 0..num_rows {
         for j in 0..num_cols {
-            if octopuses[i][j] == 10 {
+            let p = Point{i, j};
+            if octopuses[i][j] > 9 && !has_flashed.contains(&p) {
+                has_flashed.insert(p);
                 num_of_flashes += 1;
                 for i2 in (i as i32 - 1)..=(i as i32 + 1) {
                     if i2 >= 0 && i2 < num_rows as i32 {
@@ -65,6 +70,7 @@ fn process_flashes(octopuses: &mut Vec<Vec<u32>>) -> u32 {
             }
         }
     }
+
     num_of_flashes
 }
 
@@ -75,14 +81,38 @@ fn increase_octopuses_energy(octopuses: &mut Vec<Vec<u32>>) {
 
 }
 
+// fn print_board(octopuses: &Vec<Vec<u32>>) {
+//     octopuses.iter().for_each(|o| {
+//         o.iter().for_each(|i| {
+//             print!("{},", i);
+//         });
+//         println!("");
+//     });
+//     println!("");
+// }
+
+fn is_all_flash(octopuses: &Vec<Vec<u32>>) -> bool {
+    octopuses.iter().flatten().sum::<u32>() == 0
+}
+
 fn main() {
     let mut octopuses = parse_input();
-    println!("{:?}", octopuses);
+    // print_board(&octopuses);
 
     let mut  num_of_fashes = 0;
-    (0..10).for_each(|_| {
+    (0..100).for_each(|_| {
         num_of_fashes += get_num_of_fashes(&mut octopuses);
     });
-    // println!("{:?}", octopuses);
-    println!("num_of_flashes: {}", num_of_fashes);
+
+    println!("Part 1: {}", num_of_fashes);
+
+    let mut octopuses = parse_input();
+
+    let mut step = 0;
+    while !is_all_flash(&octopuses) {
+        get_num_of_fashes(&mut octopuses);
+        step += 1;
+    }
+
+    println!("Part 2: step {}", step);
 }
