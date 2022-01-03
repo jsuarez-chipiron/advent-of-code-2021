@@ -1,7 +1,7 @@
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 fn parse_input() -> Vec<HashSet<String>> {
-    let raw = aoc::read_one_per_line::<String>("inputs/day12.txt").unwrap();
+    let raw = aoc::read_one_per_line::<String>("inputs/day12_test.txt").unwrap();
 
     let mut ret: Vec<HashSet<String>> = Vec::new();
 
@@ -30,6 +30,46 @@ fn has_visited_cave(cave: &String, current_path: &Vec<String>) -> bool {
         }
     });
     ret
+}
+
+fn num_of_twos(mapa: &HashMap<&str, u8>) -> u8 {
+    let mut count = 0u8;
+    mapa.iter().for_each(|(_, &v)| {
+        if v != 1 {
+            count += 1;
+        }
+    });
+    count
+}
+
+fn can_continue(_cave: &String, current_path: &Vec<String>) -> bool {
+
+    let mut mapa: HashMap<&str, u8> = HashMap::new();
+
+    current_path.iter().for_each(|i| {
+        if is_small_cave(i) && i != "start" {
+            *mapa.entry(i).or_insert(0) += 1;
+        }
+    });
+
+    if num_of_twos(&mapa) == 1 {
+        return false;
+    }
+    true
+    // *mapa.entry(&cave).or_insert(0) += 1;
+    
+
+    // println!("six: {}", cave);
+    // println!("xx: {:?}", mapa);
+
+
+    // let mut ret = false;
+    // current_path.iter().for_each(|i| {
+    //     if i == cave {
+    //         ret = true;
+    //     }
+    // });
+    // ret
 }
 
 fn get_next_caves (cave: &String, caves: &Vec<HashSet<String>>) -> Vec<String> {
@@ -71,7 +111,7 @@ fn run_paths(current_cave: &String, caves: &Vec<HashSet<String>>, current_path: 
             // println!("next_cave [{}]: {}", level, next_cave);
 
             if is_small_cave(&next_cave) {
-                if !has_visited_cave(&next_cave, &current_path) {
+                if can_continue(&next_cave, &current_path) && next_cave != "start" {
                     run_paths(&next_cave, caves, current_path.clone(), founded_paths, level+1);
                 }
             } 
