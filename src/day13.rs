@@ -84,8 +84,9 @@ fn convert_to_fixed(points: Vec<Point>) -> Vec<Vec<u32>> {
     ret
 }
 
-#[allow(dead_code)]
-fn print_fixed(points: &Vec<Vec<u32>>) {
+fn print_fixed<T>(points: &Vec<Vec<T>>) 
+    where T: std::fmt::Display
+{
     for i in 0..points.len() {
         for j in 0..points[0].len() {
             print!("{} ", points[i][j]);
@@ -123,9 +124,9 @@ fn process_fold(p: &u32, points: Vec<Vec<u32>>) -> Vec<Vec<u32>> {
 }
 
 fn sum_chunks(part1: Vec<Vec<u32>>, part2: Vec<Vec<u32>>) -> Vec<Vec<u32>> {
-    let mut ret: Vec<Vec<u32>> = init_fixed(part1.len(), part1[0].len());
-    for i in 0..part1.len() {
-        for j in 0..part1[0].len() {
+    let mut ret: Vec<Vec<u32>> = init_fixed(part2.len(), part2[0].len());
+    for i in 0..part2.len() {
+        for j in 0..part2[0].len() {
             ret[i][j] = part1[i][j] + part2[i][j];
         }
     }
@@ -167,6 +168,20 @@ fn count_points(points: Vec<Vec<u32>>) -> usize {
     ret
 }
 
+fn format(points: &Vec<Vec<u32>>) -> Vec<Vec<char>> {
+    let mut ret = Vec::new();
+    points.iter().for_each(|i| {
+        ret.push( i.iter().map(|&x| {
+                match x {
+                    0 => '.',
+                    _ => '#',
+                }
+            }).collect());
+    });
+
+    ret
+}
+
 fn main() {
     let path = "inputs/day13.txt";
 
@@ -174,17 +189,22 @@ fn main() {
     let folds = parse_fold_input(path);
 
     let points = convert_to_fixed(points);
-    // print_fixed(&points);
-
-    // for i in folds {
-    //     points = fold_fixed(points, &i);
-    //     // println!();
-    //     // print_fixed(&points);
-    // }
     let first_fold = fold_fixed(points, &folds[0]);
 
     let count = count_points(first_fold);
     println!("Part 1: {}", count);
 
+    let points = parse_coord_input(path);
+    let folds = parse_fold_input(path);
+
+    let mut points = convert_to_fixed(points);
+
+    for i in folds {
+        points = fold_fixed(points, &i);
+    }
+
+    println!("Part 2:");
+    print_fixed::<char>(&format(&points));
+    // the result is EAHKRECP
     
 }
