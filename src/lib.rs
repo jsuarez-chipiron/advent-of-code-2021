@@ -5,7 +5,7 @@ where
     T: FromStr,
 {
     Ok(std::fs::read_to_string(path)?
-       .split("\n")
+       .split('\n')
        .filter_map(|line| line.parse::<T>().ok())
        .collect())
 }
@@ -18,7 +18,7 @@ where
 
     let mut new_integers = Vec::new();
     for n in integers {
-        if n != "" {
+        if !n.is_empty() {
             new_integers.push(n);
         }
     }
