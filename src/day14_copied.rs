@@ -8,7 +8,8 @@ const ELEMENT_COUNT: usize = 26; // Map 'A'..'Z' to id's 0 to 25
 // another element of the same type (i.e. the original pair is duplicated)
 // or it expands into two new pairs (the new element pairs with each element of the original pair)
 #[derive(Copy, Clone)]
-enum Rule {
+enum Rule
+{
     DuplicatePair,
     TwoPairs(usize, usize),
 }
@@ -17,21 +18,25 @@ type PairInsertionRules = BTreeMap<usize, Rule>;
 type PairCounts = BTreeMap<usize, usize>;
 type ElementCounts = [usize; ELEMENT_COUNT];
 
-fn char_to_id(ch: char) -> usize {
+fn char_to_id(ch: char) -> usize
+{
     ch as usize - b'A' as usize
 }
 
-fn pair_to_index(left: usize, right: usize) -> usize {
+fn pair_to_index(left: usize, right: usize) -> usize
+{
     26 * left + right
 }
 
-struct Inputs {
+struct Inputs
+{
     first_element: usize,
     pair_counts: PairCounts,
     rules: PairInsertionRules,
 }
 
-fn main() {
+fn main()
+{
     let start_time = Instant::now();
     let contents = fs::read_to_string("inputs/day14.txt").unwrap();
     let inputs = parse_file_contents(contents);
@@ -45,7 +50,8 @@ fn main() {
     println!("Part 1 difference: {}", difference); // Duration: 133.241µs
 }
 
-fn parse_file_contents(contents: String) -> Inputs {
+fn parse_file_contents(contents: String) -> Inputs
+{
     let (template_str, rules_str) = contents.split_once("\n\n").unwrap();
 
     let template: Vec<_> = template_str.chars().map(char_to_id).collect();
@@ -66,9 +72,12 @@ fn parse_file_contents(contents: String) -> Inputs {
             let right = inputs[1];
             let id = pair_to_index(left, right);
 
-            let rule: Rule = if (left == right) && (left == id) {
+            let rule: Rule = if (left == right) && (left == id)
+            {
                 Rule::DuplicatePair
-            } else {
+            }
+            else
+            {
                 let left_pair = pair_to_index(left, output);
                 let right_pair = pair_to_index(output, right);
                 Rule::TwoPairs(left_pair, right_pair)
@@ -83,9 +92,11 @@ fn parse_file_contents(contents: String) -> Inputs {
     }
 }
 
-fn get_max_min_count_difference(steps: usize, inputs: &Inputs) -> usize {
+fn get_max_min_count_difference(steps: usize, inputs: &Inputs) -> usize
+{
     let mut pair_counts: PairCounts = inputs.pair_counts.clone();
-    for _ in 0..steps {
+    for _ in 0..steps
+    {
         pair_counts = step(&pair_counts, &inputs.rules);
     }
 
@@ -101,11 +112,14 @@ fn get_max_min_count_difference(steps: usize, inputs: &Inputs) -> usize {
 
     let mut min_count = usize::MAX;
     let mut max_count: usize = 0;
-    for count in counts {
-        if count > max_count {
+    for count in counts
+    {
+        if count > max_count
+        {
             max_count = count;
         }
-        if count > 0 && count < min_count {
+        if count > 0 && count < min_count
+        {
             min_count = count
         }
     }
@@ -113,20 +127,28 @@ fn get_max_min_count_difference(steps: usize, inputs: &Inputs) -> usize {
     difference
 }
 
-fn step(pair_counts: &PairCounts, rules: &PairInsertionRules) -> PairCounts {
+fn step(pair_counts: &PairCounts, rules: &PairInsertionRules) -> PairCounts
+{
     let mut new_pair_counts: PairCounts = BTreeMap::new();
-    for (&pair_index, &count) in pair_counts.iter() {
-        if let Some(rule) = rules.get(&pair_index) {
-            match rule {
-                Rule::DuplicatePair => {
+    for (&pair_index, &count) in pair_counts.iter()
+    {
+        if let Some(rule) = rules.get(&pair_index)
+        {
+            match rule
+            {
+                Rule::DuplicatePair =>
+                {
                     *new_pair_counts.entry(pair_index).or_insert(0) += 2 * count;
                 }
-                Rule::TwoPairs(pair_index1, pair_index2) => {
+                Rule::TwoPairs(pair_index1, pair_index2) =>
+                {
                     *new_pair_counts.entry(*pair_index1).or_insert(0) += count;
                     *new_pair_counts.entry(*pair_index2).or_insert(0) += count;
                 }
             }
-        } else {
+        }
+        else
+        {
             *new_pair_counts.entry(pair_index).or_insert(0) += count;
         }
     }

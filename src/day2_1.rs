@@ -1,26 +1,30 @@
-enum Command {
+enum Command
+{
     Forward(i32),
     Down(i32),
     Up(i32),
 }
 
 #[derive(Debug)]
-struct Position {
+struct Position
+{
     horizontal: i32,
     depth: i32,
 }
 
-fn calculate_new_position(pos: &mut Position, comm: &Command) {
-
-    match comm {
+fn calculate_new_position(pos: &mut Position, comm: &Command)
+{
+    match comm
+    {
         Command::Forward(val) => pos.horizontal += val,
         Command::Down(val) => pos.depth += val,
         Command::Up(val) => pos.depth -= val,
     }
 }
 
-fn main() {
-    let input = vec![ 
+fn main()
+{
+    let input = vec![
         Command::Forward(1),
         Command::Forward(2),
         Command::Down(5),
@@ -1020,20 +1024,23 @@ fn main() {
         Command::Down(6),
         Command::Down(2),
         Command::Forward(9),
-        Command::Forward(3)];
+        Command::Forward(3),
+    ];
 
     let mut position = Position {
         horizontal: 0,
         depth: 0,
     };
 
-    for command in &input {
+    for command in &input
+    {
         calculate_new_position(&mut position, &command);
     }
 
-    println!("The result is {}x{} = {}", position.horizontal, position.depth, (position.horizontal*position.depth));
-
+    println!(
+        "The result is {}x{} = {}",
+        position.horizontal,
+        position.depth,
+        (position.horizontal * position.depth)
+    );
 }
-
-
-

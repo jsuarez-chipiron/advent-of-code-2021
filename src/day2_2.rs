@@ -1,31 +1,36 @@
 // cargo run --bin day2_2
 
-enum Command {
+enum Command
+{
     Forward(u32),
     Down(u32),
     Up(u32),
 }
 
 #[derive(Debug)]
-struct Position {
+struct Position
+{
     horizontal: u32,
     depth: u32,
     aim: u32,
 }
 
-fn calculate_new_position(pos: &mut Position, comm: &Command) {
-
-    match comm {
-        Command::Forward(val) => {
+fn calculate_new_position(pos: &mut Position, comm: &Command)
+{
+    match comm
+    {
+        Command::Forward(val) =>
+        {
             pos.horizontal += val;
             pos.depth += pos.aim * val;
-        },
+        }
         Command::Down(val) => pos.aim += val,
         Command::Up(val) => pos.aim -= val,
     }
 }
 
-fn main() {
+fn main()
+{
     let input = vec![
         Command::Forward(1),
         Command::Forward(2),
@@ -1026,8 +1031,8 @@ fn main() {
         Command::Down(6),
         Command::Down(2),
         Command::Forward(9),
-        Command::Forward(3)
-            ];
+        Command::Forward(3),
+    ];
 
     let mut position = Position {
         horizontal: 0,
@@ -1035,13 +1040,15 @@ fn main() {
         aim: 0,
     };
 
-    for command in &input {
+    for command in &input
+    {
         calculate_new_position(&mut position, &command);
     }
 
-    println!("The result is {}x{} = {}", 
-             position.horizontal, position.depth, (position.horizontal*position.depth));
-
+    println!(
+        "The result is {}x{} = {}",
+        position.horizontal,
+        position.depth,
+        (position.horizontal * position.depth)
+    );
 }
-
-

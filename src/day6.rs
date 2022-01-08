@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
-fn get_count(puzzle: &Vec<usize>, days: u32) -> u64 {
+fn get_count(puzzle: &Vec<usize>, days: u32) -> u64
+{
     let mut counts = VecDeque::from(vec![0; 9]);
 
     puzzle.iter().for_each(|i| counts[*i] += 1);
@@ -14,9 +15,10 @@ fn get_count(puzzle: &Vec<usize>, days: u32) -> u64 {
     counts.iter().sum()
 }
 
-fn main() {
+fn main()
+{
     //TJ's solution
-    
+
     let initial_fishes = aoc::get_integers("inputs/day6.txt");
 
     println!("Part1: {}", get_count(&initial_fishes, 80));

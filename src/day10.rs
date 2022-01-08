@@ -1,72 +1,92 @@
-use std::collections::{VecDeque, HashMap};
+use std::collections::{HashMap, VecDeque};
 
-fn validate_line(line: &String) -> Result<(), char> {
+fn validate_line(line: &String) -> Result<(), char>
+{
     let mut stack: VecDeque<char> = VecDeque::new();
 
-    for i in line.chars() {
-        match i {
-            ']' => {
+    for i in line.chars()
+    {
+        match i
+        {
+            ']' =>
+            {
                 let c = stack.pop_front().unwrap();
-                if c != '[' {
+                if c != '['
+                {
                     return Err(i);
                 }
-            },
-            ')' => {
+            }
+            ')' =>
+            {
                 let c = stack.pop_front().unwrap();
-                if c != '(' {
+                if c != '('
+                {
                     return Err(i);
                 }
-            },
-            '}' => {
+            }
+            '}' =>
+            {
                 let c = stack.pop_front().unwrap();
-                if c != '{' {
+                if c != '{'
+                {
                     return Err(i);
                 }
-            },
-            '>' => {
+            }
+            '>' =>
+            {
                 let c = stack.pop_front().unwrap();
-                if c != '<' {
+                if c != '<'
+                {
                     return Err(i);
                 }
-            },
-            _ => {
+            }
+            _ =>
+            {
                 stack.push_front(i);
-            },
+            }
         };
     }
 
     Ok(())
 }
 
-fn complete(line: &String) -> Vec<char> {
+fn complete(line: &String) -> Vec<char>
+{
     let mut stack: VecDeque<char> = VecDeque::new();
-    for i in line.chars() {
-        match i {
-            ']' | ')' | '>' | '}' => {
+    for i in line.chars()
+    {
+        match i
+        {
+            ']' | ')' | '>' | '}' =>
+            {
                 let _ = stack.pop_front().unwrap();
-            },
-            '[' | '(' | '<' | '{' => {
+            }
+            '[' | '(' | '<' | '{' =>
+            {
                 stack.push_front(i);
-            },
-            _ => {},
+            }
+            _ =>
+            {}
         };
     }
 
-    let ret: Vec<char> = stack.iter().map(|&i| {
-        match i {
+    let ret: Vec<char> = stack
+        .iter()
+        .map(|&i| match i
+        {
             '[' => ']',
             '(' => ')',
             '{' => '}',
             '<' => '>',
             _ => i,
-        }
-    }).collect();
+        })
+        .collect();
 
     ret
-
 }
 
-fn main() {
+fn main()
+{
     let mut dict: HashMap<char, u64> = HashMap::new();
 
     dict.insert(')', 3);
@@ -82,29 +102,35 @@ fn main() {
     dict2.insert('>', 4);
 
     let raw = aoc::read_one_per_line::<String>("inputs/day10.txt").unwrap();
-    let lines: Vec<&String> = raw.iter().take(raw.len()-1).collect();
+    let lines: Vec<&String> = raw.iter().take(raw.len() - 1).collect();
 
     let mut errors: Vec<char> = Vec::new();
-    lines.iter().for_each(|i| {
-        match validate_line(*i) {
-            Ok(()) => {},
-            Err(c) => {
-                errors.push(c);
-            },
+    lines.iter().for_each(|i| match validate_line(*i)
+    {
+        Ok(()) =>
+        {}
+        Err(c) =>
+        {
+            errors.push(c);
         }
     });
 
     println!("Part1: {}", errors.iter().map(|i| dict[i]).sum::<u64>());
 
-    let corrects: Vec<&String> = raw.iter().filter(|&i| {
-        if i.len() == 0 {
-            return false;
-        }
-        if let Ok(()) = validate_line(i) {
-            return true;
-        }
-        false
-    }).collect();
+    let corrects: Vec<&String> = raw
+        .iter()
+        .filter(|&i| {
+            if i.len() == 0
+            {
+                return false;
+            }
+            if let Ok(()) = validate_line(i)
+            {
+                return true;
+            }
+            false
+        })
+        .collect();
 
     let mut completes: Vec<Vec<char>> = Vec::new();
 
@@ -113,9 +139,11 @@ fn main() {
     });
 
     let mut results: Vec<u64> = Vec::new();
-    for line in completes {
+    for line in completes
+    {
         let mut score = 0;
-        for c in line {
+        for c in line
+        {
             score *= 5;
             score += dict2[&c];
         }
@@ -124,6 +152,5 @@ fn main() {
 
     results.sort();
 
-    println!("Part 2: {}", results[results.len()/2]);
-
+    println!("Part 2: {}", results[results.len() / 2]);
 }
