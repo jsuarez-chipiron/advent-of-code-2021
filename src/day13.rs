@@ -39,21 +39,15 @@ impl FromStr for Fold
 
     fn from_str(s: &str) -> Result<Self, Self::Err>
     {
-        if s.starts_with("fold along")
-        {
+        if s.starts_with("fold along") {
             let parts: Vec<&str> = s[11..].split('=').collect();
             let num = parts[1].parse::<u32>()?;
-            if parts[0] == "x"
-            {
+            if parts[0] == "x" {
                 return Ok(Fold::X(num));
-            }
-            else
-            {
+            } else {
                 return Ok(Fold::Y(num));
             }
-        }
-        else
-        {
+        } else {
             s.parse::<u32>()?;
             // La llamada a parse siempre va a fallar y se devolvera el parse int
             // No he visto otra forma mejor de crear un ParseIntError
@@ -76,8 +70,7 @@ fn init_fixed(rows: usize, cols: usize) -> Vec<Vec<u32>>
 {
     let mut ret: Vec<Vec<u32>> = Vec::new();
 
-    for _ in 0..rows
-    {
+    for _ in 0..rows {
         ret.push(vec![0; cols]);
     }
 
@@ -102,10 +95,8 @@ fn print_fixed<T>(points: &Vec<Vec<T>>)
 where
     T: std::fmt::Display,
 {
-    for i in 0..points.len()
-    {
-        for j in 0..points[0].len()
-        {
+    for i in 0..points.len() {
+        for j in 0..points[0].len() {
             print!("{} ", points[i][j]);
         }
         println!();
@@ -150,10 +141,8 @@ fn process_fold(p: &u32, points: Vec<Vec<u32>>) -> Vec<Vec<u32>>
 fn sum_chunks(part1: Vec<Vec<u32>>, part2: Vec<Vec<u32>>) -> Vec<Vec<u32>>
 {
     let mut ret: Vec<Vec<u32>> = init_fixed(part2.len(), part2[0].len());
-    for i in 0..part2.len()
-    {
-        for j in 0..part2[0].len()
-        {
+    for i in 0..part2.len() {
+        for j in 0..part2[0].len() {
             ret[i][j] = part1[i][j] + part2[i][j];
         }
     }
@@ -165,10 +154,8 @@ fn transpose(v: Vec<Vec<u32>>) -> Vec<Vec<u32>>
 {
     let mut ret: Vec<Vec<u32>> = init_fixed(v[0].len(), v.len());
 
-    for i in 0..ret.len()
-    {
-        for j in 0..ret[0].len()
-        {
+    for i in 0..ret.len() {
+        for j in 0..ret[0].len() {
             ret[i][j] = v[j][i];
         }
     }
@@ -178,11 +165,9 @@ fn transpose(v: Vec<Vec<u32>>) -> Vec<Vec<u32>>
 
 fn fold_fixed(points: Vec<Vec<u32>>, fold: &Fold) -> Vec<Vec<u32>>
 {
-    match fold
-    {
+    match fold {
         Fold::Y(p) => process_fold(p, points),
-        Fold::X(p) =>
-        {
+        Fold::X(p) => {
             let temp_points = process_fold(p, transpose(points));
             transpose(temp_points)
         }
@@ -205,8 +190,7 @@ fn format(points: &Vec<Vec<u32>>) -> Vec<Vec<char>>
     points.iter().for_each(|i| {
         ret.push(
             i.iter()
-                .map(|&x| match x
-                {
+                .map(|&x| match x {
                     0 => '.',
                     _ => '#',
                 })
@@ -235,8 +219,7 @@ fn main()
 
     let mut points = convert_to_fixed(points);
 
-    for i in folds
-    {
+    for i in folds {
         points = fold_fixed(points, &i);
     }
 

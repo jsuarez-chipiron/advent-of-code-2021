@@ -17,10 +17,8 @@ where
     let integers = read_one_per_line::<String>(path).unwrap();
 
     let mut new_integers = Vec::new();
-    for n in integers
-    {
-        if !n.is_empty()
-        {
+    for n in integers {
+        if !n.is_empty() {
             new_integers.push(n);
         }
     }

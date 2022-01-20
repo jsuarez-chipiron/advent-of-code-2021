@@ -24,15 +24,13 @@ impl FromStr for Carton
     {
         let numbers = s
             .split(' ')
-            .map(|x| match x.parse::<i32>()
-            {
+            .map(|x| match x.parse::<i32>() {
                 Ok(n) => n,
                 Err(_) => -1,
             })
             .collect::<Vec<i32>>();
 
-        if numbers.len() > 1
-        {
+        if numbers.len() > 1 {
             let vnum = numbers
                 .iter()
                 .fold(Vec::new(), |mut acc, item| {
@@ -67,16 +65,13 @@ impl Carton
 {
     fn validate_lines(&self) -> bool
     {
-        for i in (0..25).step_by(5)
-        {
+        for i in (0..25).step_by(5) {
             let mut is_valid = true;
-            for j in 0..5
-            {
+            for j in 0..5 {
                 let k = j + i;
                 is_valid = is_valid && self.numbers[k].checked;
             }
-            if is_valid
-            {
+            if is_valid {
                 return true;
             }
         }
@@ -86,16 +81,13 @@ impl Carton
 
     fn validate_cols(&self) -> bool
     {
-        for i in 0..5
-        {
+        for i in 0..5 {
             let mut is_valid = true;
-            for j in (0..25).step_by(5)
-            {
+            for j in (0..25).step_by(5) {
                 let k = j + i;
                 is_valid = is_valid && self.numbers[k].checked;
             }
-            if is_valid
-            {
+            if is_valid {
                 return true;
             }
         }
@@ -117,14 +109,11 @@ impl Carton
             "Last Number: {} - finished {}",
             self.last_number, self.finished
         );
-        for i in (0..25).step_by(5)
-        {
-            for j in 0..5
-            {
+        for i in (0..25).step_by(5) {
+            for j in 0..5 {
                 let k = j + i;
                 let mut c = "";
-                if self.numbers[k].checked
-                {
+                if self.numbers[k].checked {
                     c = "*";
                 }
                 print!("{}{} ", c, self.numbers[k].val);
@@ -137,12 +126,10 @@ impl Carton
 
 fn play(numbers: &Vec<i32>, cartones: &mut Vec<Carton>) -> Option<(i32, Carton)>
 {
-    for n in numbers
-    {
+    for n in numbers {
         // println!("jugada: {}", n);
         let c = mark_number_and_validate(*n, cartones);
-        if let Some(v) = c
-        {
+        if let Some(v) = c {
             return Some((*n, v));
         }
     }
@@ -152,14 +139,11 @@ fn play(numbers: &Vec<i32>, cartones: &mut Vec<Carton>) -> Option<(i32, Carton)>
 fn mark_number_and_validate(number: i32, cartones: &mut Vec<Carton>) -> Option<Carton>
 {
     // let mut j = 0;
-    for c in cartones.iter_mut()
-    {
+    for c in cartones.iter_mut() {
         // j += 1;
 
-        for i in 0..25
-        {
-            if c.numbers[i].val == number
-            {
+        for i in 0..25 {
+            if c.numbers[i].val == number {
                 // println!("changing to marked the number {} in carton {}", number, j);
                 c.numbers[i].checked = true;
             }
@@ -168,8 +152,7 @@ fn mark_number_and_validate(number: i32, cartones: &mut Vec<Carton>) -> Option<C
         let valid_line = c.validate_lines();
         let valid_cols = c.validate_cols();
 
-        if valid_cols || valid_line
-        {
+        if valid_cols || valid_line {
             return Some(c.clone());
         }
     }
@@ -179,14 +162,12 @@ fn mark_number_and_validate(number: i32, cartones: &mut Vec<Carton>) -> Option<C
 
 fn play_to_lose(numbers: &Vec<i32>, cartones: &mut Vec<Carton>) -> Option<(i32, Carton)>
 {
-    for n in numbers
-    {
+    for n in numbers {
         println!("jugada: {}", n);
         mark_number_and_validate_to_lose(*n, cartones);
         let unfinished = get_unfinished(&cartones);
         // println!("unfinished num: {}", unfinished.len());
-        if unfinished.len() == 1
-        {
+        if unfinished.len() == 1 {
             return Some((*n, unfinished[0].clone()));
         }
     }
@@ -208,16 +189,12 @@ fn get_unfinished(cartones: &Vec<Carton>) -> Vec<Carton>
 fn mark_number_and_validate_to_lose(number: i32, cartones: &mut Vec<Carton>)
 {
     let mut j = 0;
-    for c in cartones.iter_mut()
-    {
+    for c in cartones.iter_mut() {
         j += 1;
 
-        if !c.finished
-        {
-            for i in 0..25
-            {
-                if c.numbers[i].val == number
-                {
+        if !c.finished {
+            for i in 0..25 {
+                if c.numbers[i].val == number {
                     println!("changing to marked the number {} in carton {}", number, j);
                     c.numbers[i].checked = true;
                 }
@@ -226,8 +203,7 @@ fn mark_number_and_validate_to_lose(number: i32, cartones: &mut Vec<Carton>)
             let valid_line = c.validate_lines();
             let valid_cols = c.validate_cols();
 
-            if valid_cols || valid_line
-            {
+            if valid_cols || valid_line {
                 c.finished = true;
                 c.last_number = number;
             }
@@ -242,10 +218,8 @@ fn get_cartones() -> Vec<Carton>
     // println!("len: {}", cartones.len());
 
     let mut new_cartones = Vec::new();
-    for c in cartones
-    {
-        if c.numbers.len() > 0
-        {
+    for c in cartones {
+        if c.numbers.len() > 0 {
             new_cartones.push(c);
         }
     }
@@ -261,10 +235,8 @@ fn main()
     // println!("{:?}", numbers);
 
     let mut new_numbers = Vec::new();
-    for n in numbers
-    {
-        if n != ""
-        {
+    for n in numbers {
+        if n != "" {
             new_numbers.push(n);
         }
     }
@@ -280,10 +252,8 @@ fn main()
 
     let res = play(&numbers, &mut cartones);
 
-    match res
-    {
-        Some((num_play, winner)) =>
-        {
+    match res {
+        Some((num_play, winner)) => {
             let sum_unmarked = winner.sum_unmarked();
             println!(
                 "Part 1: winner {}, sum unmarked: {}, final result: {}",
@@ -292,8 +262,7 @@ fn main()
                 sum_unmarked * num_play
             );
         }
-        None =>
-        {
+        None => {
             println!("No winner");
         }
     }
@@ -303,10 +272,8 @@ fn main()
 
     let res = play_to_lose(&numbers, &mut boards);
 
-    match res
-    {
-        Some((num_play, loser)) =>
-        {
+    match res {
+        Some((num_play, loser)) => {
             loser.print_carton();
             let sum_unmarked = loser.sum_unmarked();
             println!(
@@ -316,8 +283,7 @@ fn main()
                 sum_unmarked * num_play
             );
         }
-        None =>
-        {
+        None => {
             println!("No winner");
         }
     }

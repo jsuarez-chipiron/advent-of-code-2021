@@ -17,10 +17,8 @@ struct Position
 
 fn calculate_new_position(pos: &mut Position, comm: &Command)
 {
-    match comm
-    {
-        Command::Forward(val) =>
-        {
+    match comm {
+        Command::Forward(val) => {
             pos.horizontal += val;
             pos.depth += pos.aim * val;
         }
@@ -1040,8 +1038,7 @@ fn main()
         aim: 0,
     };
 
-    for command in &input
-    {
+    for command in &input {
         calculate_new_position(&mut position, &command);
     }
 

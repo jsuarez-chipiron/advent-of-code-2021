@@ -4,44 +4,33 @@ fn validate_line(line: &String) -> Result<(), char>
 {
     let mut stack: VecDeque<char> = VecDeque::new();
 
-    for i in line.chars()
-    {
-        match i
-        {
-            ']' =>
-            {
+    for i in line.chars() {
+        match i {
+            ']' => {
                 let c = stack.pop_front().unwrap();
-                if c != '['
-                {
+                if c != '[' {
                     return Err(i);
                 }
             }
-            ')' =>
-            {
+            ')' => {
                 let c = stack.pop_front().unwrap();
-                if c != '('
-                {
+                if c != '(' {
                     return Err(i);
                 }
             }
-            '}' =>
-            {
+            '}' => {
                 let c = stack.pop_front().unwrap();
-                if c != '{'
-                {
+                if c != '{' {
                     return Err(i);
                 }
             }
-            '>' =>
-            {
+            '>' => {
                 let c = stack.pop_front().unwrap();
-                if c != '<'
-                {
+                if c != '<' {
                     return Err(i);
                 }
             }
-            _ =>
-            {
+            _ => {
                 stack.push_front(i);
             }
         };
@@ -53,27 +42,21 @@ fn validate_line(line: &String) -> Result<(), char>
 fn complete(line: &String) -> Vec<char>
 {
     let mut stack: VecDeque<char> = VecDeque::new();
-    for i in line.chars()
-    {
-        match i
-        {
-            ']' | ')' | '>' | '}' =>
-            {
+    for i in line.chars() {
+        match i {
+            ']' | ')' | '>' | '}' => {
                 let _ = stack.pop_front().unwrap();
             }
-            '[' | '(' | '<' | '{' =>
-            {
+            '[' | '(' | '<' | '{' => {
                 stack.push_front(i);
             }
-            _ =>
-            {}
+            _ => {}
         };
     }
 
     let ret: Vec<char> = stack
         .iter()
-        .map(|&i| match i
-        {
+        .map(|&i| match i {
             '[' => ']',
             '(' => ')',
             '{' => '}',
@@ -105,12 +88,9 @@ fn main()
     let lines: Vec<&String> = raw.iter().take(raw.len() - 1).collect();
 
     let mut errors: Vec<char> = Vec::new();
-    lines.iter().for_each(|i| match validate_line(*i)
-    {
-        Ok(()) =>
-        {}
-        Err(c) =>
-        {
+    lines.iter().for_each(|i| match validate_line(*i) {
+        Ok(()) => {}
+        Err(c) => {
             errors.push(c);
         }
     });
@@ -120,12 +100,10 @@ fn main()
     let corrects: Vec<&String> = raw
         .iter()
         .filter(|&i| {
-            if i.len() == 0
-            {
+            if i.len() == 0 {
                 return false;
             }
-            if let Ok(()) = validate_line(i)
-            {
+            if let Ok(()) = validate_line(i) {
                 return true;
             }
             false
@@ -139,11 +117,9 @@ fn main()
     });
 
     let mut results: Vec<u64> = Vec::new();
-    for line in completes
-    {
+    for line in completes {
         let mut score = 0;
-        for c in line
-        {
+        for c in line {
             score *= 5;
             score += dict2[&c];
         }

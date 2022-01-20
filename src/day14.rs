@@ -33,8 +33,7 @@ fn get_particles(pol: &str) -> Vec<&str>
     let l = pol.len();
     let mut ret = vec![];
 
-    for i in 0..l - 1
-    {
+    for i in 0..l - 1 {
         ret.push(&pol[i..i + 2]);
     }
 
@@ -46,8 +45,7 @@ fn generate_polymer(pol: &str, dict: &HashMap<String, char>) -> String
     let mut ret = String::new();
 
     let particles = get_particles(pol);
-    for p in particles
-    {
+    for p in particles {
         let new_particle = format!("{}{}", &p[..1], dict[p]);
         ret += &new_particle;
     }
@@ -84,8 +82,7 @@ fn main()
 
     let mut polymer = parse_template(path);
 
-    for _ in 0..10
-    {
+    for _ in 0..10 {
         polymer = generate_polymer(&polymer, &traducctions);
     }
 

@@ -14,8 +14,7 @@ struct Position
 
 fn calculate_new_position(pos: &mut Position, comm: &Command)
 {
-    match comm
-    {
+    match comm {
         Command::Forward(val) => pos.horizontal += val,
         Command::Down(val) => pos.depth += val,
         Command::Up(val) => pos.depth -= val,
@@ -1032,8 +1031,7 @@ fn main()
         depth: 0,
     };
 
-    for command in &input
-    {
+    for command in &input {
         calculate_new_position(&mut position, &command);
     }
 

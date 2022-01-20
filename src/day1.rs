@@ -6,11 +6,9 @@ fn main()
 
     let mut counter = 0;
 
-    for i in 1..input.len()
-    {
+    for i in 1..input.len() {
         // println!("{}", &input[i]);
-        if &input[i] > &input[i - 1]
-        {
+        if &input[i] > &input[i - 1] {
             counter += 1;
         }
     }
@@ -18,19 +16,16 @@ fn main()
 
     let mut new_input = Vec::new();
 
-    for i in 1..input.len() - 1
-    {
+    for i in 1..input.len() - 1 {
         let new_item = &input[i - 1] + &input[i] + &input[i + 1];
         new_input.push(new_item);
     }
 
     let mut counter = 0;
 
-    for i in 1..new_input.len()
-    {
+    for i in 1..new_input.len() {
         // println!("{}", &input[i]);
-        if &new_input[i] > &new_input[i - 1]
-        {
+        if &new_input[i] > &new_input[i - 1] {
             counter += 1;
         }
     }

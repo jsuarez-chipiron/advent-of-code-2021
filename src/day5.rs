@@ -54,46 +54,33 @@ impl VentVector
         let mut ret: Vec<Point> = Vec::new();
         // println!("vector: {:?}", self);
 
-        if self.x1 == self.x2
-        {
+        if self.x1 == self.x2 {
             // vertical line
             let (first, last) = sort(self.y1, self.y2);
-            for i in first..=last
-            {
+            for i in first..=last {
                 ret.push(Point { x: self.x1, y: i });
             }
-        }
-        else
-        {
-            if self.y1 == self.y2
-            {
+        } else {
+            if self.y1 == self.y2 {
                 // horizontal line
                 let (first, last) = sort(self.x1, self.x2);
                 // println!("y: {}: {}", first, last);
-                for i in first..=last
-                {
+                for i in first..=last {
                     ret.push(Point { x: i, y: self.y1 });
                 }
-            }
-            else
-            {
+            } else {
                 // diagonal line
                 let mut i = 0;
-                while i <= (self.x2 - self.x1).abs()
-                {
-                    if self.x1 < self.x2
-                    {
-                        if self.y1 < self.y2
-                        {
+                while i <= (self.x2 - self.x1).abs() {
+                    if self.x1 < self.x2 {
+                        if self.y1 < self.y2 {
                             // println!("up - up");
                             // println!("xx: {}-{}-{}", i, self.x1+i, self.y1+i);
                             ret.push(Point {
                                 x: self.x1 + i,
                                 y: self.y1 + i,
                             });
-                        }
-                        else
-                        {
+                        } else {
                             // println!("up - down");
                             // println!("xx: {}-{}-{}", i, self.x1+i, self.y1-i);
                             ret.push(Point {
@@ -101,20 +88,15 @@ impl VentVector
                                 y: self.y1 - i,
                             });
                         }
-                    }
-                    else
-                    {
-                        if self.y1 < self.y2
-                        {
+                    } else {
+                        if self.y1 < self.y2 {
                             // println!("down - up");
                             // println!("xx: {}-{}-{}", i, self.x1-i, self.y1+i);
                             ret.push(Point {
                                 x: self.x1 - i,
                                 y: self.y1 + i,
                             });
-                        }
-                        else
-                        {
+                        } else {
                             // println!("down - down");
                             // println!("xx: {}-{}-{}", i, self.x1-i, self.y1-i);
                             ret.push(Point {
@@ -134,8 +116,7 @@ impl VentVector
 
 fn sort(x: i32, y: i32) -> (i32, i32)
 {
-    if x > y
-    {
+    if x > y {
         return (y, x);
     }
     (x, y)
@@ -154,8 +135,7 @@ impl Board
     {
         let vent_points = vv.get_points();
 
-        for vent_point in vent_points
-        {
+        for vent_point in vent_points {
             self.add_vent_point(vent_point);
         }
     }

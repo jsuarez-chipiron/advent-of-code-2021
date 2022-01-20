@@ -9,11 +9,9 @@ fn main()
 
     let mut fuel = i32::MAX;
 
-    for i in *min as usize..*max as usize
-    {
+    for i in *min as usize..*max as usize {
         let atempt = cost(&crabs, i);
-        if atempt < fuel
-        {
+        if atempt < fuel {
             fuel = atempt;
         }
     }
@@ -21,11 +19,9 @@ fn main()
     println!("part1 fuel: {}", fuel);
 
     let mut fuel = i32::MAX;
-    for i in *min as usize..*max as usize
-    {
+    for i in *min as usize..*max as usize {
         let atempt = cost2(&crabs, i);
-        if atempt < fuel
-        {
+        if atempt < fuel {
             fuel = atempt;
         }
     }
@@ -37,8 +33,7 @@ fn fill_fuel_map(max: i32) -> HashMap<i32, i32>
 {
     let mut ret: HashMap<i32, i32> = HashMap::new();
     ret.insert(0, 0);
-    for i in 1..=max
-    {
+    for i in 1..=max {
         ret.insert(i, i + ret[&(i - 1)]);
     }
 

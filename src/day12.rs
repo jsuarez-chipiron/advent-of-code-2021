@@ -7,8 +7,7 @@ fn parse_input() -> Vec<HashSet<String>>
     let mut ret: Vec<HashSet<String>> = Vec::new();
 
     raw.iter().for_each(|line| {
-        if line != ""
-        {
+        if line != "" {
             let mut hm: HashSet<String> = HashSet::new();
             line.split("-").for_each(|i| {
                 hm.insert(String::from(i));
@@ -29,8 +28,7 @@ fn num_of_twos(mapa: &HashMap<&str, u8>) -> u8
 {
     let mut count = 0u8;
     mapa.iter().for_each(|(_, &v)| {
-        if v == 2
-        {
+        if v == 2 {
             count += 1;
         }
     });
@@ -39,47 +37,35 @@ fn num_of_twos(mapa: &HashMap<&str, u8>) -> u8
 
 fn can_continue(cave: &String, current_path: &Vec<String>) -> bool
 {
-    if cave == "start"
-    {
+    if cave == "start" {
         return false;
     }
 
-    if !is_small_cave(cave)
-    {
+    if !is_small_cave(cave) {
         return true;
     }
 
     let mut mapa: HashMap<&str, u8> = HashMap::new();
 
     current_path.iter().for_each(|i| {
-        if is_small_cave(i) && i != "start"
-        {
+        if is_small_cave(i) && i != "start" {
             *mapa.entry(i).or_insert(0) += 1;
         }
     });
 
-    match mapa.get(&cave[..])
-    {
-        Some(&v) =>
-        {
-            if v == 0
-            {
+    match mapa.get(&cave[..]) {
+        Some(&v) => {
+            if v == 0 {
                 return true;
-            }
-            else
-            {
-                if num_of_twos(&mapa) == 0
-                {
+            } else {
+                if num_of_twos(&mapa) == 0 {
                     return true;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
         }
-        None =>
-        {
+        None => {
             return true;
         }
     }
@@ -90,11 +76,9 @@ fn get_next_caves(cave: &String, caves: &Vec<HashSet<String>>) -> Vec<String>
     let mut ret: Vec<String> = Vec::new();
 
     caves.iter().for_each(|i| {
-        if i.contains(cave)
-        {
+        if i.contains(cave) {
             i.iter().for_each(|x| {
-                if x != cave
-                {
+                if x != cave {
                     ret.push(x.to_string());
                 }
             });
@@ -123,17 +107,12 @@ fn run_paths(
 )
 {
     let current_path = new_from_current_path(current_cave, current_path);
-    if current_cave == "end"
-    {
+    if current_cave == "end" {
         founded_paths.push(current_path);
-    }
-    else
-    {
+    } else {
         let next_caves = get_next_caves(current_cave, caves);
-        for next_cave in next_caves
-        {
-            if can_continue(&next_cave, &current_path) && next_cave != "start"
-            {
+        for next_cave in next_caves {
+            if can_continue(&next_cave, &current_path) && next_cave != "start" {
                 run_paths(
                     &next_cave,
                     caves,

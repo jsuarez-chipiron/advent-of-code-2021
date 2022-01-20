@@ -25,20 +25,16 @@ fn is_lower(heightmap: &Vec<Vec<u32>>, coords: (usize, usize)) -> bool
     let (i, j) = coords;
     let val = heightmap[i][j];
 
-    if i > 0 && val >= heightmap[i - 1][j]
-    {
+    if i > 0 && val >= heightmap[i - 1][j] {
         return false;
     }
-    if i < heightmap.len() - 1 && val >= heightmap[i + 1][j]
-    {
+    if i < heightmap.len() - 1 && val >= heightmap[i + 1][j] {
         return false;
     }
-    if j > 0 && val >= heightmap[i][j - 1]
-    {
+    if j > 0 && val >= heightmap[i][j - 1] {
         return false;
     }
-    if j < heightmap[0].len() - 1 && val >= heightmap[i][j + 1]
-    {
+    if j < heightmap[0].len() - 1 && val >= heightmap[i][j + 1] {
         return false;
     }
 
@@ -52,40 +48,31 @@ fn add_to_basin(
     visited: &mut HashSet<Point>,
 )
 {
-    if point.val != 9
-    {
+    if point.val != 9 {
         basin.push(point.clone());
         visited.insert(point.clone());
 
-        if point.i > 0
-        {
+        if point.i > 0 {
             let p = Point::from_heightmap(heightmap, point.i - 1, point.j);
-            if !visited.contains(&p)
-            {
+            if !visited.contains(&p) {
                 add_to_basin(&p, basin, heightmap, visited);
             }
         }
-        if point.i < heightmap.len() - 1
-        {
+        if point.i < heightmap.len() - 1 {
             let p = Point::from_heightmap(heightmap, point.i + 1, point.j);
-            if !visited.contains(&p)
-            {
+            if !visited.contains(&p) {
                 add_to_basin(&p, basin, heightmap, visited);
             }
         }
-        if point.j > 0
-        {
+        if point.j > 0 {
             let p = Point::from_heightmap(heightmap, point.i, point.j - 1);
-            if !visited.contains(&p)
-            {
+            if !visited.contains(&p) {
                 add_to_basin(&p, basin, heightmap, visited);
             }
         }
-        if point.j < heightmap[0].len() - 1
-        {
+        if point.j < heightmap[0].len() - 1 {
             let p = Point::from_heightmap(heightmap, point.i, point.j + 1);
-            if !visited.contains(&p)
-            {
+            if !visited.contains(&p) {
                 add_to_basin(&p, basin, heightmap, visited);
             }
         }
@@ -123,12 +110,9 @@ fn main()
 
     let mut low_points: Vec<Point> = Vec::new();
 
-    for i in 0..heightmap.len()
-    {
-        for j in 0..heightmap[0].len()
-        {
-            if is_lower(&heightmap, (i, j))
-            {
+    for i in 0..heightmap.len() {
+        for j in 0..heightmap[0].len() {
+            if is_lower(&heightmap, (i, j)) {
                 low_points.push(Point {
                     val: heightmap[i][j],
                     i,
