@@ -24,10 +24,7 @@ impl FromStr for Carton
     {
         let numbers = s
             .split(' ')
-            .map(|x| match x.parse::<i32>() {
-                Ok(n) => n,
-                Err(_) => -1,
-            })
+            .map(|x| x.parse::<i32>().unwrap_or(-1))
             .collect::<Vec<i32>>();
 
         if numbers.len() > 1 {
